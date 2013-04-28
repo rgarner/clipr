@@ -1,4 +1,5 @@
 .idea/
 .rvmrc
+pkg/
 Gemfile.lock
 spec/fixtures/saved.tcx

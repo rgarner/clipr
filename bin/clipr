@@ -9,5 +9,5 @@ options = Trollop::options do
    opt :after, 'Time after which to clip'
 end
 
-
+puts Dir.pwd
 
