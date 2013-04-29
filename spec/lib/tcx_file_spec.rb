@@ -54,7 +54,7 @@ describe Clipr::TCXFile do
     end
 
     it 'sets the total time' do
-      file.reported_total_seconds.should == 9700.176
+      file.reported_total_seconds.should == 8091.0
     end
 
     describe 'The saved file' do
@@ -72,6 +72,10 @@ describe Clipr::TCXFile do
 
         it 'has one activity in the Garmin namespace' do
           loaded_xml.xpath('//xmlns:Activity').should have(1).node
+        end
+
+        it 'has the correct speed' do
+          loaded_xml.xpath('//xmlns:Lap/xmlns:TotalTimeSeconds').text.to_f.should == 8091.0
         end
       end
 

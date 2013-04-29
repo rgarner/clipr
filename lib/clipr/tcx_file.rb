@@ -65,6 +65,10 @@ module Clipr
       @doc.at_xpath('//g:Activity/g:Lap/g:TotalTimeSeconds', ns).text.to_f
     end
 
+    def reported_total_seconds=(value)
+      @doc.at_xpath('//g:Activity/g:Lap/g:TotalTimeSeconds', ns).content = value
+    end
+
     def real_total_distance
       @doc.at_xpath('//g:Track[1]/g:Trackpoint[last()]/g:DistanceMeters', ns).text.to_f
     end
@@ -85,7 +89,7 @@ module Clipr
 
     def clip_after(options = {})
       succeeding_trackpoints = @doc.xpath("//g:Track[1]/g:Trackpoint[g:Time='#{options[:time]}']/following::g:Trackpoint", ns)
-      succeeding_trackpoints.each { |t| t.unlink }
+      succeeding_trackpoints.each { |t| t.remove }
       dirty!
     end
 
@@ -93,6 +97,10 @@ module Clipr
       File.open(filename, 'w') do |file|
         file.write(@doc)
       end
+    end
+
+    def total_summary
+      "#{trackpoints.length} trackpoints, #{real_avg_speed} real avg, #{reported_avg_speed} reported"
     end
 
     private
@@ -106,6 +114,7 @@ module Clipr
     def recalculate_reported!
       self.reported_avg_speed = real_avg_speed
       self.reported_total_distance = real_total_distance
+      self.reported_total_seconds = real_total_seconds
       self.reported_max_speed = real_max_speed
     end
   end
