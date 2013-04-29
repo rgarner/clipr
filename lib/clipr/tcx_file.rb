@@ -100,7 +100,7 @@ module Clipr
     end
 
     def total_summary
-      "#{trackpoints.length} trackpoints, #{real_avg_speed} real avg, #{reported_avg_speed} reported"
+      "#{trackpoints.length} trackpoints, #{real_avg_speed} real avg, #{reported_avg_speed} m/s reported"
     end
 
     private
