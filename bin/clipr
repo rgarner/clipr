@@ -4,9 +4,10 @@ require_relative '../lib/trollop'
 require_relative '../lib/clipr'
 
 @options = Trollop::options do
-   version "Clipr version #{Clipr::VERSION}"
-   opt :verbose, 'Show old and new totals'
-   opt :from, 'Clip from this ISO8601 time', type: String
+  version "Clipr version #{Clipr::VERSION}"
+  opt :verbose, 'Show old and new totals'
+  opt :from, 'Clip from this ISO8601 time', type: String
+  opt :dry_run, 'Perform a dry run (don' 't save file)'
 end
 
 def out(s)
@@ -16,14 +17,15 @@ end
 puts 'Usage: clipr input [output]' unless ARGV.length >=1 and ARGV.length <=2
 
 Trollop::die '--from must be supplied and must be an ISO8601 time' unless Time.iso8601(@options[:from]) rescue nil
+@options[:verbose] = true if @options[:dry_run]
 
-input_filename  = ARGV[0]
+input_filename = ARGV[0]
 output_filename = ARGV[1] || ARGV[0].sub('.tcx', '_clipped.tcx')
 
-tcx = Clipr::TCXFile.new(File.read(input_filename))
-
-out "#{input_filename}:\n\t#{tcx.total_summary}"
-tcx.clip_after(:time => @options[:from])
-tcx.save(output_filename)
-out "#{output_filename}:\n\t#{tcx.total_summary}"
+Clipr::TCXFile.new(File.read(input_filename)).tap do |tcx|
+  out "#{input_filename}:\n\t#{tcx.total_summary}"
+  tcx.clip_after(:time => @options[:from])
+  tcx.save(output_filename) unless @options[:dry_run]
+  out "#{@options[:dry_run] ? 'Not saved, would have created' : output_filename}:\n\t#{tcx.total_summary}"
+end
 
