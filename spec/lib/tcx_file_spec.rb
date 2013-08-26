@@ -78,8 +78,14 @@ describe Clipr::TCXFile do
           loaded_xml.xpath('//xmlns:Lap/xmlns:TotalTimeSeconds').text.to_f.should == 8091.0
         end
       end
-
-
     end
+  end
+
+  describe 'A file with trackpoints that have no distance' do
+    before(:all) do
+      @file = Clipr::TCXFile.new(content_file('tony.tcx'))
+    end
+
+    its(:real_total_distance) { should eql(53917.5) }
   end
 end

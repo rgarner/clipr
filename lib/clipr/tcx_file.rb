@@ -70,7 +70,7 @@ module Clipr
     end
 
     def real_total_distance
-      @doc.at_xpath('//g:Track[1]/g:Trackpoint[last()]/g:DistanceMeters', ns).text.to_f
+      @doc.at_xpath('//g:Track[1]/g:Trackpoint[g:DistanceMeters][last()]/g:DistanceMeters', ns).text.to_f
     end
 
     def real_total_seconds
